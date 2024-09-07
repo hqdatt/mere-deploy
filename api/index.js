@@ -1,8 +1,17 @@
-const express = require('express');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const User = require("./models/User");
+const Post = require("./models/Post");
+const bcrypt = require("bcryptjs");
 const app = express();
-const dotenv = require('dotenv');
-const cors = require('cors')
-dotenv.config();
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+const multer = require("multer");
+const uploadMiddleware = multer({ dest: "uploads/" });
+const fs = require("fs");
+const dotenv = require("dotenv")
+dotenv.config()
 
 app.use(cors())
 
