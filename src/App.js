@@ -17,6 +17,8 @@ function App() {
     <div>
       <button onClick={fetchInfo}> fetch info </button>
       <div>result: {result}</div>
+      <button>+</button>
+      <button>-</button>
     </div>
   );
 }
