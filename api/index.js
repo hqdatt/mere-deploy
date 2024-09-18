@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const User = require("./models/User");
 const Post = require("./models/Post");
 const bcrypt = require("bcryptjs");
@@ -14,15 +13,15 @@ const dotenv = require("dotenv")
 dotenv.config()
 
 const salt = bcrypt.genSaltSync(10);
-const secret = "asdfe45we45w345wegw345werjktjwertkj";
+const secret = process.env.JWT_SECRET;
 
 app.use(cors())
 app.use(express.json());
 app.use(cookieParser());
 
-mongoose.connect(
-   "mongodb+srv://quangdathoang:Dat10042005@myblog.vh53n.mongodb.net/?retryWrites=true&w=majority&appName=MyBlog"
-);
+const connectDB = require("./connectMongo");
+
+connectDB();
 
 app.post("/api/register", async (req, res) => {
    const { username, password } = req.body;
