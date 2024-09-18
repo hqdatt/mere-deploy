@@ -11,6 +11,7 @@ const uploadMiddleware = multer({ dest: "uploads/" });
 const fs = require("fs");
 const dotenv = require("dotenv")
 dotenv.config()
+const PORT = process.env.API_PORT || 4000;
 
 const salt = bcrypt.genSaltSync(10);
 const secret = process.env.JWT_SECRET;
@@ -56,10 +57,8 @@ app.post("/api/login", async (req, res) => {
    }
  });
 
-if (process.env.API_PORT ){
-   app.listen(process.env.API_PORT, () => {
-      console.log('Server running on http://localhost:4000');
-   })
-}
+ app.listen(PORT, () => {
+   console.log(`Server running on http://localhost:${PORT}`);
+});
 
 module.exports = app;
