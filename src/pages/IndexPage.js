@@ -5,29 +5,22 @@ import { useEffect, useState } from "react";
 export default function IndexPage() {
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 6;
+  const [totalPages, setTotalPages] = useState(1);
+  const postsPerPage = 3;
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/post`).then((response) => {
-      response.json().then((posts) => {
+    fetch(`${process.env.REACT_APP_API_URL}/post?page=${currentPage}&limit=${postsPerPage}`).then((response) => {
+      response.json().then(({ posts, totalPages }) => {
         setPosts(posts);
+        setTotalPages(totalPages);
       });
     });
-  }, []);
-
-  // Calculate the indexes for the posts to display on the current page
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-  // Calculate total pages
-  const totalPages = Math.ceil(posts.length / postsPerPage);
+  }, [currentPage]);
 
   return (
     <>
       <div className="posts">
-        {currentPosts.length > 0 &&
-          currentPosts.map((post) => <Post key={post.id} {...post} />)}
+        {posts.length > 0 && posts.map((post) => <Post key={post._id} {...post} />)}
       </div>
       <Pagination
         totalPages={totalPages}

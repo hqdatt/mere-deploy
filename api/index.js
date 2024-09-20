@@ -110,9 +110,6 @@ app.post("/api/post", upload.single('file'), async (req, res) => {
   try {
     const { title, content } = req.body;
     const file = req.file;
-    if (!file) {
-      return res.status(400).json({ message: 'No file uploaded' });
-    }
     const uniqueFileName = `${uuidv4()}-${file.originalname}`;
     const fileBuffer = file.buffer;
 
@@ -141,12 +138,97 @@ app.post("/api/post", upload.single('file'), async (req, res) => {
   }
 });
 
+app.put("/api/post", upload.single('file'), async (req, res) => {
+  try {
+    const { title, content, id } = req.body;
+
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) return res.status(401).json({ message: 'Unauthorized' });
+
+      const postDoc = await Post.findById(id);
+      if (!postDoc) return res.status(404).json({ message: 'Post not found' });
+
+      const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+      if (!isAuthor) return res.status(403).json({ message: "You are not the author" });
+
+      let downloadURL = postDoc.cover;
+      if (req.file) {
+        const file = req.file;
+        const uniqueFileName = `${uuidv4()}-${file.originalname}`;
+        const fileBuffer = file.buffer;
+
+        const fileUpload = bucket.file(uniqueFileName);
+        await fileUpload.save(fileBuffer, {
+          metadata: {
+            contentType: file.mimetype,
+          },
+        });
+        downloadURL = `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(uniqueFileName)}?alt=media`;
+      }
+
+      postDoc.title = title;
+      postDoc.content = content;
+      postDoc.cover = downloadURL;
+
+      await postDoc.save();
+      
+      res.json(postDoc);
+    });
+  } catch (error) {
+    console.error('Error updating post:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.delete("/api/post", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) return res.status(401).json({ message: "Unauthorized" });
+
+      const post = await Post.findById(id);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      if (post.author.toString() !== info.id) {
+        return res.status(403).json({ message: "You are not the author of this post" });
+      }
+
+      await Post.findByIdAndDelete(id);
+      res.json({ message: "Post deleted successfully" });
+    });
+    
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.get("/api/post", async (req, res) => {
-  res.json(
-    await Post.find()
+  const { page = 1, limit = 9 } = req.query;
+
+  try {
+    const posts = await Post.find()
       .sort({ createdAt: -1 })
-      .limit(50)
-  );
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const totalPosts = await Post.countDocuments();
+    const totalPages = Math.ceil(totalPosts / limit)
+
+    res.json({
+      posts,
+      totalPages,
+      currentPage: parseInt(page),
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 app.get("/api/post/:id", async (req, res) => {

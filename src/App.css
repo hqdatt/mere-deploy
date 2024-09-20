@@ -280,27 +280,58 @@ div.content li {
   margin-bottom: 10px;
 }
 
-div.edit-row {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-div.post-page a.edit-btn {
-  background-color: #333;
-  display: inline-flex;
+.edit-row-container {
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
-  gap: 5px;
-  color: #fff;
-  padding: 15px 30px;
-  border-radius: 5px;
+  width: 100%;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.edit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  background-color: #4e4d4d;
+  color: white !important;
+  text-decoration: none !important;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.edit-btn:hover {
+  background-color: #151414;
+}
+
+.delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  background-color: #f44336;
+  color: white;
   text-decoration: none;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 }
 
-a svg {
-  height: 20px;
+.delete-btn:hover {
+  background-color: #cf3330;
 }
 
-div.create-page {
-  width: 90%;
-  margin-inline: auto;
+.edit-btn svg, .delete-btn svg {
+  width: 24px;
+  height: 24px;
+  color: white;
 }

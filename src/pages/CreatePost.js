@@ -27,6 +27,7 @@ export default function CreatePost() {
   if (redirect) {
     return <Navigate to={'/'} />
   }
+  
   return (
     <div className="create-page">
       <h4 className="page-title"> Create </h4>
