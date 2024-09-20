@@ -130,3 +130,15 @@ form.login h1,
 form.register h1 {
   text-align: center;
 }
+
+/**************************************** CREATE/EDIT SECTION ****************************************/
+div.create-page {
+  width: 90%;
+  margin-inline: auto;
+}
+
+.page-title {
+  font-family: "Libre Baskerville", serif;
+  font-size: 2rem;
+}
+

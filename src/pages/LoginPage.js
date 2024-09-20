@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import {Navigate} from "react-router-dom";
+import {UserContext} from "../UserContext";
+
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  async function test(){
-    alert("Hola");
-  }
+  const [redirect,setRedirect] = useState(false);
+  const {setUserInfo} = useContext(UserContext);
+
   async function login(ev) {
     ev.preventDefault();
     try {
@@ -12,18 +15,26 @@ export default function LoginPage() {
         method: 'POST',
         body: JSON.stringify({ username, password }),
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
       });
-      const data = await response.json();
       if (response.status === 200) {
-        alert('Login successful');
+        response.json().then(userInfo => {
+          setUserInfo(userInfo);
+          setRedirect(true);
+        });
       } else {
-        alert(`Login failed: ${data.message}`);
+        alert(`Login failed`);
       }
     } catch (error) {
       console.error('Login error:', error);
       alert('Login failed: Unable to connect to the server.');
     }
   }
+
+  if (redirect) {
+    return <Navigate to={'/'} />
+  }
+
   return (
     <form className="login" onSubmit={login}>
       <h1>Login</h1>
