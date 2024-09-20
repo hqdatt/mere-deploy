@@ -19,7 +19,7 @@ export default function Footer() {
             </div>
             <div className="footer_section intro">
                <h4>About This Blog</h4>
-               <p>Welcome to [Your Blog Name]! We share insightful articles on [topics you cover]. Stay tuned for more updates and stories that matter. Do you agree with this</p>
+               <p>Welcome to Scarlett Journal! This is my space to share my blogs and all the little moments that make up my daily life. I can’t wait to share more stories, updates, and insights with you, so stick around and stay tuned!</p>
             </div>
          </div>
       </footer>

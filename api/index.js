@@ -182,7 +182,7 @@ app.put("/api/post", upload.single('file'), async (req, res) => {
 });
 
 app.delete("/api/post", async (req, res) => {
-  const { id } = req.body;
+  const { id, fileName} = req.body;
 
   try {
     const { token } = req.cookies;
@@ -196,6 +196,15 @@ app.delete("/api/post", async (req, res) => {
 
       if (post.author.toString() !== info.id) {
         return res.status(403).json({ message: "You are not the author of this post" });
+      }
+      
+      try {
+        const filePath = fileName.split('?')[0]
+        const file = bucket.file(filePath);
+        await file.delete();
+      } catch (error) {
+        console.error("Error deleting file from Firebase Storage:", error);
+        return res.status(500).json({ message: `Failed to delete file from storage` });
       }
 
       await Post.findByIdAndDelete(id);

@@ -19,23 +19,24 @@ export default function PostPage() {
 
   if (!postInfo) return "";
 
-  const handleDelete = async (postId) => {
+  const handleDelete = async (postId, fileName) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this post?");
     if (confirmDelete) {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/post`, {
         method: "DELETE",
-        body: JSON.stringify({ id: postId }),
+        body: JSON.stringify({ id: postId, fileName: fileName.split('/').pop() }),
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-        }
+        },
       });
   
       if (response.ok) {
         alert("Post deleted successfully");
         setRedirect(true);
       } else {
-        alert("Failed to delete post");
+        const errorData = await response.json();
+        alert(`Failed to delete post: ${errorData.message}`);
       }
     }
   };
@@ -58,7 +59,7 @@ export default function PostPage() {
             </Link>
           </div>
           <div className="edit-row">
-            <button className="delete-btn" onClick={() => handleDelete(postInfo._id)}>
+            <button className="delete-btn" onClick={() => handleDelete(postInfo._id, postInfo.cover)}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18.75V6h12v12.75A2.25 2.25 0 0115.75 21H8.25A2.25 2.25 0 016 18.75zM9 9.75V16.5m3-6.75v6.75M5.25 6l.75-1.5h12L18.75 6"/>
               </svg>
