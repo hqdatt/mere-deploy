@@ -25,11 +25,6 @@ export default function IndexPage() {
 
   return (
     <>
-      <img
-        className="headerImg"
-        src="https://i0.wp.com/mymeadowreport.com/wp-content/uploads/2020/07/img_4343.jpg?fit=1000%2C667&ssl=1"
-        alt="Header"
-      />
       <div className="posts">
         {currentPosts.length > 0 &&
           currentPosts.map((post) => <Post key={post.id} {...post} />)}
